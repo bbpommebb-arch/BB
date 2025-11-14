@@ -19,18 +19,22 @@ document.addEventListener("DOMContentLoaded", () => {
     auth.signInWithEmailAndPassword(email, password)
       .then(() => {
         document.getElementById("loginPopup").style.display = "none";
-        alert("Connecté !");
-        activateEditing();
       })
       .catch(err => alert(err.message));
   });
 
-  // --- Activer/désactiver l'édition selon l'état ---
+  // --- Protection du site ---
   auth.onAuthStateChanged(user => {
     if (user) {
+      // Afficher le journal
+      document.getElementById("lockedMessage").style.display = "none";
+      document.getElementById("journalContent").style.display = "block";
       activateEditing();
+      loadEntries();
     } else {
-      disableEditing();
+      // Masquer le journal
+      document.getElementById("journalContent").style.display = "none";
+      document.getElementById("lockedMessage").style.display = "block";
     }
   });
 
@@ -47,55 +51,62 @@ document.addEventListener("DOMContentLoaded", () => {
       content,
       date: new Date().toISOString()
     });
+
     document.getElementById("newTitle").value = "";
     document.getElementById("newContent").value = "";
   });
 
-  // --- Écoute Firestore (live) ---
-  db.collection("entries").orderBy("date", "desc").onSnapshot(snapshot => {
-    const entriesDiv = document.getElementById("entries");
-    entriesDiv.innerHTML = "";
-
-    snapshot.forEach(doc => {
-      const data = doc.data();
-
-      const div = document.createElement("div");
-      div.className = "entry";
-
-      div.innerHTML = `
-        <div class="entry-title">${data.title}</div>
-        <div class="entry-date">${new Date(data.date).toLocaleString()}</div>
-        <p>${data.content}</p>
-        <button class="editBtn">Modifier</button>
-        <button class="deleteBtn">Supprimer</button>
-      `;
-
-      // Suppression
-      div.querySelector(".deleteBtn").addEventListener("click", () => {
-        if (!requireAuth()) return;
-        if (confirm("Supprimer ?")) db.collection("entries").doc(doc.id).delete();
-      });
-
-      // Modification
-      div.querySelector(".editBtn").addEventListener("click", () => {
-        if (!requireAuth()) return;
-
-        const newTitle = prompt("Nouveau titre :", data.title);
-        const newContent = prompt("Nouveau contenu :", data.content);
-
-        if (newTitle && newContent) {
-          db.collection("entries").doc(doc.id).update({
-            title: newTitle,
-            content: newContent
-          });
-        }
-      });
-
-      entriesDiv.appendChild(div);
-    });
-  });
-
 });
+
+
+// --- Charger les entrées ---
+function loadEntries() {
+  db.collection("entries")
+    .orderBy("date", "desc")
+    .onSnapshot(snapshot => {
+      const entriesDiv = document.getElementById("entries");
+      entriesDiv.innerHTML = "";
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+
+        const div = document.createElement("div");
+        div.className = "entry";
+
+        div.innerHTML = `
+          <div class="entry-title">${data.title}</div>
+          <div class="entry-date">${new Date(data.date).toLocaleString()}</div>
+          <p>${data.content}</p>
+          <button class="editBtn">Modifier</button>
+          <button class="deleteBtn">Supprimer</button>
+        `;
+
+        // Suppression
+        div.querySelector(".deleteBtn").addEventListener("click", () => {
+          if (!requireAuth()) return;
+          if (confirm("Supprimer ?")) db.collection("entries").doc(doc.id).delete();
+        });
+
+        // Edition
+        div.querySelector(".editBtn").addEventListener("click", () => {
+          if (!requireAuth()) return;
+
+          const newTitle = prompt("Nouveau titre :", data.title);
+          const newContent = prompt("Nouveau contenu :", data.content);
+
+          if (newTitle && newContent) {
+            db.collection("entries").doc(doc.id).update({
+              title: newTitle,
+              content: newContent
+            });
+          }
+        });
+
+        entriesDiv.appendChild(div);
+      });
+
+    });
+}
 
 
 // --- UTILITAIRES ---
@@ -112,10 +123,4 @@ function activateEditing() {
   document.getElementById("addEntryBtn").disabled = false;
   document.querySelectorAll(".editBtn").forEach(btn => btn.style.display = "inline-block");
   document.querySelectorAll(".deleteBtn").forEach(btn => btn.style.display = "inline-block");
-}
-
-function disableEditing() {
-  document.getElementById("addEntryBtn").disabled = true;
-  document.querySelectorAll(".editBtn").forEach(btn => btn.style.display = "none");
-  document.querySelectorAll(".deleteBtn").forEach(btn => btn.style.display = "none");
 }

@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Mon Journal</title>
+  <title>Mon Journal Privé</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
@@ -14,6 +14,7 @@
       right: 10px;
       opacity: 0.5;
       cursor: pointer;
+      z-index: 9999;
     }
 
     #loginPopup {
@@ -25,6 +26,7 @@
       padding: 20px;
       border: 1px solid #ccc;
       box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      z-index: 10000;
     }
 
     .entry {
@@ -41,12 +43,10 @@
 </head>
 <body>
 
-<h1>Mon Journal</h1>
-
-<!-- Bouton Admin -->
+<!-- Bouton Admin toujours visible -->
 <button id="adminBtn">Admin</button>
 
-<!-- Popup connexion -->
+<!-- Popup de connexion -->
 <div id="loginPopup">
   <h3>Connexion</h3>
   <input id="email" type="email" placeholder="Email"><br><br>
@@ -55,18 +55,28 @@
   <button id="closeLogin">Fermer</button>
 </div>
 
-<!-- Formulaire ajout -->
-<div>
-  <h3>Nouvelle entrée</h3>
-  <input id="newTitle" placeholder="Titre"><br><br>
-  <textarea id="newContent" placeholder="Texte..." rows="4"></textarea><br><br>
-  <button id="addEntryBtn" disabled>Ajouter</button>
+<!-- Message pour les visiteurs non connectés -->
+<div id="lockedMessage">
+  <h2>Connexion requise</h2>
+  <p>Cliquez sur le bouton « Admin » pour vous connecter.</p>
 </div>
 
-<hr>
+<!-- CONTENU DU JOURNAL (invisible avant login) -->
+<div id="journalContent" style="display:none;">
 
-<!-- Liste des entrées -->
-<div id="entries"></div>
+  <h1>Mon Journal</h1>
+
+  <div>
+    <h3>Nouvelle entrée</h3>
+    <input id="newTitle" placeholder="Titre"><br><br>
+    <textarea id="newContent" placeholder="Texte..." rows="4"></textarea><br><br>
+    <button id="addEntryBtn" disabled>Ajouter</button>
+  </div>
+
+  <hr>
+
+  <div id="entries"></div>
+</div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -74,7 +84,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ⚠️⚠️⚠️ REMPLACE PAR TES INFOS FIREBASE ⚠️⚠️⚠️
+// ⚠️⚠️⚠️ METS TA CONFIG FIREBASE ICI ⚠️⚠️⚠️
 const firebaseConfig = {
   apiKey: "AIzaSyB-DfZugoODC32gUqZH8lU6IJ2Kq2MSGng",
   authDomain: "mon-journal-d5e59.firebaseapp.com",
@@ -88,5 +98,6 @@ firebase.initializeApp(firebaseConfig);
 </script>
 
 <script src="app.js"></script>
+
 </body>
 </html>
