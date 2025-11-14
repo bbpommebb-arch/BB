@@ -1,51 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Mon Journal</title>
+  <meta charset="UTF-8">
+  <title>Mon Journal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- FullCalendar -->
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css' rel='stylesheet' />
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    #adminBtn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      opacity: 0.5;
+      cursor: pointer;
+    }
 
-<link rel="stylesheet" href="style.css">
+    #loginPopup {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    .entry {
+      padding: 10px;
+      border: 1px solid #ddd;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+
+    .entry-title { font-weight: bold; }
+    .entry-date { font-size: 0.8em; color: #777; }
+    .editBtn, .deleteBtn { display: none; margin-right: 5px; }
+  </style>
 </head>
 <body>
+
 <h1>Mon Journal</h1>
 
-<!-- Auth email/password -->
-<div id="authContainer">
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Mot de passe">
+<!-- Bouton Admin -->
+<button id="adminBtn">Admin</button>
+
+<!-- Popup connexion -->
+<div id="loginPopup">
+  <h3>Connexion</h3>
+  <input id="email" type="email" placeholder="Email"><br><br>
+  <input id="password" type="password" placeholder="Mot de passe"><br><br>
   <button id="loginBtn">Se connecter</button>
-  <button id="signupBtn">S’inscrire</button>
-  <button id="logoutBtn" style="display:none;">Se déconnecter</button>
-  <span id="userName"></span>
+  <button id="closeLogin">Fermer</button>
 </div>
 
-<!-- Entrée -->
-<div class="input-container">
-  <input type="text" id="title" placeholder="Titre">
-  <textarea id="content" placeholder="Écrire une entrée..."></textarea>
-  <input type="text" id="tags" placeholder="Tags (séparés par virgule)">
-  <button id="saveBtn">Enregistrer</button>
-</div>
-
-<!-- Filtre tags -->
+<!-- Formulaire ajout -->
 <div>
-  <input type="text" id="filterTag" placeholder="Filtrer par tag">
+  <h3>Nouvelle entrée</h3>
+  <input id="newTitle" placeholder="Titre"><br><br>
+  <textarea id="newContent" placeholder="Texte..." rows="4"></textarea><br><br>
+  <button id="addEntryBtn" disabled>Ajouter</button>
 </div>
+
+<hr>
 
 <!-- Liste des entrées -->
 <div id="entries"></div>
 
-<!-- Calendrier -->
-<div id='calendar'></div>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ⚠️⚠️⚠️ REMPLACE PAR TES INFOS FIREBASE ⚠️⚠️⚠️
+const firebaseConfig = {
+  apiKey: "AIzaSyB-DfZugoODC32gUqZH8lU6IJ2Kq2MSGng",
+  authDomain: "mon-journal-d5e59.firebaseapp.com",
+  projectId: "mon-journal-d5e59",
+  storageBucket: "mon-journal-d5e59.firebasestorage.app",
+  messagingSenderId: "695080304385",
+  appId: "1:695080304385:web:8b0beb7d3f314a2ffe2500",
+  measurementId: "G-5RXVSVPHM9"
+};
+firebase.initializeApp(firebaseConfig);
+</script>
 
 <script src="app.js"></script>
 </body>
