@@ -50,6 +50,7 @@ input, textarea, button {
   transition: all 0.2s;
   width: 100%;
   box-sizing: border-box;
+  font-size: 14px;
 }
 
 input:focus, textarea:focus {
@@ -63,6 +64,7 @@ button {
   border: none;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 14px;
 }
 
 button:hover {
@@ -75,7 +77,7 @@ body.dark input, body.dark textarea {
   color: #e6eef8;
 }
 
-/* === Calendar === */
+/* === Calendar (taille réduite) === */
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -88,8 +90,9 @@ body.dark input, body.dark textarea {
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 14px;
+  padding: 4px 8px;
+  font-size: 12px;
+  min-width: 30px;
 }
 
 .calendar-weekdays {
@@ -99,13 +102,14 @@ body.dark input, body.dark textarea {
   font-weight: bold;
   margin-bottom: 8px;
   padding: 0 4px;
+  font-size: 12px;
 }
 
 .calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 20px;
+  gap: 2px;
+  margin-bottom: 12px;
 }
 
 .calendar-day {
@@ -113,10 +117,12 @@ body.dark input, body.dark textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
-  padding: 4px;
+  padding: 2px;
+  font-size: 12px;
   transition: background-color 0.2s;
+  height: 30px;
 }
 
 .calendar-day:hover {
@@ -130,6 +136,7 @@ body.dark input, body.dark textarea {
 
 .calendar-day.other-month {
   color: #9ca3af;
+  font-size: 12px;
 }
 
 .calendar-day.has-entries {
@@ -140,23 +147,24 @@ body.dark input, body.dark textarea {
 .calendar-day.has-entries::after {
   content: "";
   position: absolute;
-  bottom: 4px;
+  bottom: 2px;
   left: 50%;
   transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   background-color: #2563eb;
   border-radius: 50%;
 }
 
-.entries-panel {
-  border-top: 1px solid #e5e7eb;
-  padding-top: 16px;
-}
-
+/* === Entrées (zone centrale) === */
 #entriesDateTitle {
   margin-bottom: 12px;
   color: #2563eb;
+  font-size: 16px;
+}
+
+#entriesList {
+  min-height: 200px;
 }
 
 .entry {
@@ -171,39 +179,12 @@ body.dark .entry {
   background-color: rgba(96, 165, 250, 0.05);
 }
 
-/* === Entries === */
-.entry {
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 12px;
-  background-color: #fafafa;
-  transition: transform 0.1s;
-}
-
-.entry:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-body.dark .entry {
-  background-color: #212835;
-  border-color: #444;
-}
-
-/* === Entry Meta === */
-.entry .meta {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
 /* === Tags === */
-.entry-tags, .tags-row {
+.tags-row {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-top: 8px;
 }
 
 .tag {
@@ -211,9 +192,8 @@ body.dark .entry {
   color: #2563eb;
   padding: 4px 8px;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .tag:hover {
@@ -225,11 +205,12 @@ body.dark .tag {
   color: #60a5fa;
 }
 
-/* === Buttons Top === */
+/* === Boutons du haut === */
 #adminBtn, #darkToggle {
   margin-right: 8px;
   margin-bottom: 16px;
   border-radius: 12px;
   padding: 6px 12px;
   font-weight: 500;
+  font-size: 14px;
 }
