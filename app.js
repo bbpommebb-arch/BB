@@ -195,13 +195,21 @@ function startRealtime() {
         id: doc.id,
         data: doc.data(),
       }));
+      console.log("Entrées chargées :", allEntries); // OK si tu vois tes données
+
+      // Convertir les dates si nécessaire
       allEntries.forEach(entry => {
-        if (entry.data.date && typeof entry.data.date !== "string" && entry.data.date.toDate) {
+        if (entry.data.date?.toDate) {
           entry.data.date = entry.data.date.toDate().toISOString();
         }
       });
+
       generateCalendar(currentMonth, currentYear);
       updateUIFromEntries();
+
+      // Force l'affichage de toutes les entrées pour test
+      console.log("Appel de renderEntries avec toutes les entrées...");
+      renderEntries(allEntries); // <-- Ajoute cette ligne
     });
 }
 
@@ -233,27 +241,44 @@ function renderAllTags(tags) {
 
 // --- Affichage des entrées ---
 function renderEntries(entriesToShow) {
-  if (!entriesDiv) return; // Vérification de sécurité
-
-  entriesDiv.innerHTML = "";
-  if (!entriesToShow || entriesToShow.length === 0) {
-    entriesDiv.innerHTML = "<p>Aucune entrée trouvée.</p>";
+  if (!entriesDiv) {
+    console.error("Erreur : entriesDiv n'existe pas !");
     return;
   }
+
+  entriesDiv.innerHTML = ""; // Vide le conteneur
+
+  if (!entriesToShow || entriesToShow.length === 0) {
+    entriesDiv.innerHTML = "<p>Aucune entrée trouvée.</p>";
+    console.log("Aucune entrée à afficher.");
+    return;
+  }
+
+  console.log("Affichage de", entriesToShow.length, "entrées...");
 
   entriesToShow.forEach(entry => {
     const entryElement = document.createElement("div");
     entryElement.className = "entry";
-    const dateStr = entry.data.date ? new Date(entry.data.date).toLocaleString("fr-FR") : "";
-    const tagsHtml = (entry.data.tags || []).map(tag => `<span class="tag">${tag}</span>`).join(" ");
+
+    // Gestion des dates
+    const dateStr = entry.data.date ?
+      new Date(entry.data.date).toLocaleString("fr-FR") :
+      "Date inconnue";
+
+    // Gestion des tags
+    const tagsHtml = entry.data.tags && entry.data.tags.length > 0 ?
+      `<div class="entry-tags">${entry.data.tags.map(tag => `<span class="tag">${tag}</span>`).join(" ")}</div>` :
+      "";
+
     entryElement.innerHTML = `
       <div class="meta">
         <div class="title">${entry.data.title || "(sans titre)"}</div>
         <div class="date">${dateStr}</div>
       </div>
-      <p>${entry.data.content}</p>
-      ${tagsHtml ? `<div class="entry-tags">${tagsHtml}</div>` : ""}
+      <p>${entry.data.content || "(aucun contenu)"}</p>
+      ${tagsHtml}
     `;
+
     entriesDiv.appendChild(entryElement);
   });
 }
