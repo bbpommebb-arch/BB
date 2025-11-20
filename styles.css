@@ -1,16 +1,54 @@
-/* === Reset / Base === */
+/* ============================================= */
+/* === VARIABLES DE COULEURS (À MODIFIER ICI) === */
+/* ============================================= */
+:root {
+  /* Couleurs principales */
+  --color-primary: #FA500F;          /* Bleu principal (boutons, liens) */
+  --color-primary-dark: #345C72;     /* Bleu foncé (survol des boutons) */
+  --color-secondary: rgba(239, 68, 68, 0.1);        /* Rouge clair (pour les actions secondaires) */
+
+  /* Couleurs de texte */
+  --color-text: #0f172a;             /* Texte principal (mode clair) */
+  --color-text-light: #64748b;       /* Texte secondaire (mode clair) */
+  --color-text-dark: #e2e8f0;        /* Texte principal (mode sombre) */
+  --color-text-dark-light: #94a3b8; /* Texte secondaire (mode sombre) */
+
+  /* Couleurs de fond */
+  --color-bg: #f8fafc;               /* Fond principal (mode clair) */
+  --color-bg-dark: #0f172a;          /* Fond principal (mode sombre) */
+  --color-panel: #ffffff;            /* Fond des panneaux (mode clair) */
+  --color-panel-dark: #1e293b;       /* Fond des panneaux (mode sombre) */
+
+  /* Couleurs de bordure */
+  --color-border: #e2e8f0;           /* Bordures (mode clair) */
+  --color-border-dark: #334155;     /* Bordures (mode sombre) */
+
+  /* Couleurs pour les tags */
+  --color-tag-bg: rgba(59, 130, 246, 0.1);   /* Fond des tags (mode clair) */
+  --color-tag-bg-dark: #E8F0FE; /* Fond des tags (mode sombre) */
+  --color-tag-text: #D66135;        /* Texte des tags (mode clair) */
+  --color-tag-text-dark: #D66135;    /* Texte des tags (mode sombre) */
+
+  /* Couleurs pour le calendrier */
+  --color-calendar-today: rgba(59, 130, 246, 0.2); /* Jour actuel */
+  --color-calendar-has-entries: rgba(59, 130, 246, 0.3); /* Jours avec entrées */
+}
+
+/* ============================================= */
+/* === STYLES DE BASE (NE PAS MODIFIER) ======= */
+/* ============================================= */
 body {
-  font-family: 'Inter', Arial, sans-serif;
-  background-color: #f6f7fb;
-  color: #0f1724;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   margin: 0;
   padding: 16px;
   transition: background-color 0.3s, color 0.3s;
 }
 
 body.dark {
-  background-color: #0b1220;
-  color: #e6eef8;
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-dark);
 }
 
 /* === Layout === */
@@ -18,6 +56,8 @@ body.dark {
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 @media (max-width: 900px) {
@@ -26,25 +66,136 @@ body.dark {
   }
 }
 
-/* === Panels === */
+/* === Panneaux (cartes) === */
 .panel {
-  background-color: white;
+  background-color: var(--color-panel);
   padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 16px;
 }
 
 body.dark .panel {
-  background-color: #1c2330;
+  background-color: var(--color-panel-dark);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* === Inputs & Buttons === */
-input, textarea, button {
+/* ============================================= */
+/* === BOUTONS (COULEURS MODIFIABLES CI-DESSUS) === */
+/* ============================================= */
+button {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* Boutons spécifiques */
+
+.entry-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.edit-entry-btn {
+  background: var(--color-secondary);
+  color: var(--color-tag-text); /* Rouge pour la suppression */
+  padding: 4px 8px;
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.edit-entry-btn:hover {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);  
+}
+body.dark .edit-entry-btn {
+  background-color: var(--color-tag-bg-dark);
+  color: var(--color-tag-text-dark);
+}
+
+.add-tag-section {
+  margin-top: 12px;
+  text-align: right;
+}
+
+.add-tag-btn {
+  background: var(--color-secondary);
+  color: var(--color-tag-text); /* Rouge pour la suppression */
+  padding: 4px 8px;
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.add-tag-btn:hover {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);  
+}
+
+body.dark .add-tag-btn {
+  background-color: var(--color-tag-bg-dark);
+  color: var(--color-tag-text-dark);
+}
+
+.delete-entry-btn {
+  background: var(--color-secondary);
+  color: var(--color-tag-text); /* Rouge pour la suppression */
+  padding: 4px 8px;
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.delete-entry-btn:hover {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);  
+}
+body.dark .delete-entry-btn {
+  background-color: var(--color-tag-bg-dark);
+  color: var(--color-tag-text-dark);
+}
+
+.delete-tag-btn {
+  background: var(--color-secondary);
+  color: var(--color-tag-text);
+  border: none;
+  margin-left: 60px;          /* Espacement entre le texte et le bouton */
+  padding: 0 2px;            /* Réduction de la taille du bouton */
+  font-size:16px;           /* Taille de la croix */
+  cursor: pointer;
+  border-radius: 50%;        /* Forme ronde */
+  width: 10px;               /* Largeur fixe */
+  height: 10px;              /* Hauteur fixe */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-tag-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* ============================================= */
+/* === INPUTS ET FORMULAIRES === */
+/* ============================================= */
+input, textarea, select {
   font-family: inherit;
   border-radius: 8px;
   padding: 8px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   outline: none;
   margin-bottom: 8px;
   transition: all 0.2s;
@@ -53,31 +204,241 @@ input, textarea, button {
   font-size: 14px;
 }
 
-input:focus, textarea:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+input:focus, textarea:focus, select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
-button {
-  background-color: #2563eb;
+body.dark input, body.dark textarea, body.dark select {
+  background-color: var(--color-panel-dark);
+  border-color: var(--color-border-dark);
+  color: var(--color-text-dark);
+}
+
+
+/* ============================================= */
+/* === ENTRÉES (AFFICHAGE DES ARTICLES) === */
+/* ============================================= */
+#entriesDateTitle {
+  margin-bottom: 12px;
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.entry {
+  background-color: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.entry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.dark .entry {
+  background-color: var(--color-panel-dark);
+  border-color: var(--color-border-dark);
+}
+
+.entry .meta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  flex-wrap: wrap; /* Permet le retour à la ligne si nécessaire */
+}
+
+.entry .title {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-right: 8px; /* <-- Ajoute un espace à droite du titre */
+}
+
+body.dark .entry .title {
+  color: var(--color-text-dark);
+}
+
+.entry .date {
+  color: var(--color-text-light);
+  font-size: 12px;
+  margin-right: auto; /* <-- Pousse les boutons à droite */
+}
+
+body.dark .entry .date {
+  color: var(--color-text-dark-light);
+}
+
+/* ============================================= */
+/* === TAGS === */
+/* ============================================= */
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.tag {
+  background-color: var(--color-tag-bg);
+  color: var(--color-tag-text);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  transition: all 0.2s;
+}
+
+.tag:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+.tag-text {
+  margin-right: 4px;         /* Espacement à droite du texte */
+}
+
+body.dark .tag {
+  background-color: var(--color-tag-bg-dark);
+  color: var(--color-tag-text-dark);
+}
+
+/* ============================================= */
+/* === BOUTONS DU HAUT (ADMIN/DARK MODE) === */
+/* ============================================= */
+#adminBtn, #darkToggle {
+  margin-right: 8px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: 500;
+}
+
+#darkToggle {
+  background: var(--color-panel);
+  color: var(--color-text);
+}
+
+body.dark #darkToggle {
+  background: var(--color-panel-dark);
+  color: var(--color-text-dark);
+}
+
+/* ============================================= */
+/* === ANIMATIONS (OPTIONNEL) === */
+/* ============================================= */
+@keyframes fadeIn {
+  /*from { opacity: 0; transform: translateY(0px); }
+  to { opacity: 0; transform: translateY(0); }*/
+}
+
+.entry {
+  /*animation: fadeIn 0.0s ease-out;*/
+}
+
+/* ============================================= */
+/* === RESPONSIVE (ADAPTATION MOBILE) === */
+/* ============================================= */
+@media (max-width: 768px) {
+  .calendar-weekdays, .calendar-days {
+    font-size: 10px;
+  }
+
+  .calendar-day {
+    padding: 2px;
+    font-size: 10px;
+  }
+}
+
+/* Style des modales */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--color-panel);
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body.dark .modal-content {
+  background: var(--color-panel-dark);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.button-primary {
+  background: var(--color-primary);
   color: white;
   border: none;
-  cursor: pointer;
-  transition: all 0.2s;
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+
+.button-secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+/* Style pour le champ de date dans la modale */
+.modal-content label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 4px;
   font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
 }
 
-button:hover {
-  background-color: #1e40af;
+body.dark .modal-content label {
+  color: var(--color-text-dark);
 }
 
-body.dark input, body.dark textarea {
-  background-color: #2a3346;
-  border-color: #555;
-  color: #e6eef8;
+.modal-content input[type="datetime-local"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 12px;
 }
 
-/* === Calendar (taille réduite) === */
+body.dark .modal-content input[type="datetime-local"] {
+  background-color: var(--color-panel-dark);
+  border-color: var(--color-border-dark);
+  color: var(--color-text-dark);
+}
+
+
+/* ============================================= */
+/* === CALENDRIER === */
+/* ============================================= */
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -86,30 +447,28 @@ body.dark input, body.dark textarea {
 }
 
 .calendar-header button {
-  background: #2563eb;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 12px;
-  min-width: 30px;
+  padding: 6px 12px;
+  font-size: 14px;
 }
 
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  font-weight: bold;
+  font-weight: 500;
   margin-bottom: 8px;
-  padding: 0 4px;
-  font-size: 12px;
+  color: var(--color-text-light);
 }
 
 .calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 2px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .calendar-day {
@@ -117,30 +476,28 @@ body.dark input, body.dark textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  padding: 2px;
+  padding: 4px;
   font-size: 12px;
   transition: background-color 0.2s;
-  height: 30px;
 }
 
 .calendar-day:hover {
-  background-color: rgba(37, 99, 235, 0.1);
+  background-color: rgba(59, 130, 246, 0.1);
 }
 
 .calendar-day.today {
-  background-color: rgba(37, 99, 235, 0.2);
-  font-weight: bold;
+  background-color: var(--color-calendar-today);
+  font-weight: 600;
 }
 
 .calendar-day.other-month {
-  color: #9ca3af;
-  font-size: 12px;
+  color: var(--color-text-light);
 }
 
 .calendar-day.has-entries {
-  background-color: rgba(37, 99, 235, 0.3);
+  background-color: var(--color-calendar-has-entries);
   position: relative;
 }
 
@@ -152,65 +509,14 @@ body.dark input, body.dark textarea {
   transform: translateX(-50%);
   width: 4px;
   height: 4px;
-  background-color: #2563eb;
+  background-color: var(--color-primary);
   border-radius: 50%;
 }
 
-/* === Entrées (zone centrale) === */
-#entriesDateTitle {
-  margin-bottom: 12px;
-  color: #2563eb;
-  font-size: 16px;
+body.dark .calendar-day {
+  color: var(--color-text-dark);
 }
 
-#entriesList {
-  min-height: 400px;
-}
-
-.entry {
-  background-color: rgba(37, 99, 235, 0.05);
-  border-left: 3px solid #2563eb;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-}
-
-body.dark .entry {
-  background-color: rgba(96, 165, 250, 0.05);
-}
-
-/* === Tags === */
-.tags-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.tag {
-  background-color: rgba(37, 99, 235, 0.1);
-  color: #2563eb;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.tag:hover {
-  background-color: rgba(37, 99, 235, 0.2);
-}
-
-body.dark .tag {
-  background-color: rgba(96, 165, 250, 0.1);
-  color: #60a5fa;
-}
-
-/* === Boutons du haut === */
-#adminBtn, #darkToggle {
-  margin-right: 8px;
-  margin-bottom: 16px;
-  border-radius: 12px;
-  padding: 6px 12px;
-  font-weight: 500;
-  font-size: 14px;
+body.dark .calendar-day.other-month {
+  color: var(--color-text-dark-light);
 }

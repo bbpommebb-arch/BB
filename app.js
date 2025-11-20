@@ -8,7 +8,7 @@ let currentFilter = { date: null, text: "", tag: null };
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 
-// --- Éléments DOM (vérifiés après le chargement) ---
+// --- Éléments DOM ---
 let adminBtn, loginPopup, closeLogin, loginBtn, emailInput, passwordInput;
 let journalContent, lockedMessage, newTitle, newContent, newTags, addEntryBtn;
 let clearFilters, searchDate, searchText, searchBtn, allTagsDiv, darkToggle;
@@ -73,9 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // --- Calendrier ---
-  generateCalendar(currentMonth, currentYear);
-
   // --- Ajouter une entrée ---
   addEntryBtn.addEventListener("click", () => {
     if (!auth.currentUser) { alert("Tu dois être connecté."); return; }
@@ -83,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = newContent.value.trim();
     const tags = (newTags.value || "").split(",").map(tag => tag.trim()).filter(Boolean);
     if (!title && !content) { alert("Titre ou contenu requis"); return; }
-
     db.collection("entries").add({
       title: title || "(sans titre)",
       content: content || "",
@@ -115,13 +111,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // --- Calendrier ---
 function generateCalendar(month, year) {
-  if (!calendarDays || !monthYear) return; // Vérification de sécurité
-
+  if (!calendarDays || !monthYear) return;
   calendarDays.innerHTML = "";
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysInPrevMonth = new Date(year, month, 0).getDate();
-
   const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
   monthYear.textContent = `${monthNames[month]} ${year}`;
 
@@ -166,12 +160,10 @@ function createDayElement(day, className, dateStr = "") {
 }
 
 function showEntriesForDate(dateStr) {
-  if (!entriesDiv || !entriesDateTitle) return; // Vérification de sécurité
-
+  if (!entriesDiv || !entriesDateTitle) return;
   const date = new Date(dateStr);
   const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
   entriesDateTitle.textContent = `Entrées pour le ${date.toLocaleDateString("fr-FR", options)}`;
-
   const filteredEntries = allEntries.filter(entry => entry.data.date && entry.data.date.startsWith(dateStr));
   renderEntries(filteredEntries);
 }
@@ -195,9 +187,7 @@ function startRealtime() {
         id: doc.id,
         data: doc.data(),
       }));
-      //console.log("Entrées chargées :", allEntries); // OK si tu vois tes données
 
-      // Convertir les dates si nécessaire
       allEntries.forEach(entry => {
         if (entry.data.date?.toDate) {
           entry.data.date = entry.data.date.toDate().toISOString();
@@ -206,24 +196,8 @@ function startRealtime() {
 
       generateCalendar(currentMonth, currentYear);
       updateUIFromEntries();
-
-      // Force l'affichage de toutes les entrées pour test
-      //console.log("Appel de renderEntries avec toutes les entrées...");
-      renderEntries(allEntries); // <-- Ajoute cette ligne
     });
 }
-
-// Mettre à jour le datalist des tags existants
-function updateTagDatalist(tags) {
-  const datalist = document.getElementById("existingTags");
-  datalist.innerHTML = "";
-  tags.forEach(tag => {
-    const option = document.createElement("option");
-    option.value = tag;
-    datalist.appendChild(option);
-  });
-}
-
 
 // --- Mise à jour de l'UI ---
 function updateUIFromEntries() {
@@ -231,13 +205,12 @@ function updateUIFromEntries() {
   allEntries.forEach(entry => (entry.data.tags || []).forEach(tag => tagSet.add(tag)));
   const tags = Array.from(tagSet).sort();
   renderAllTags(tags);
-  updateTagDatalist(tags); // <-- Ajoute cette ligne
+  updateTagDatalist(tags);
   applyFilters();
 }
 
 function renderAllTags(tags) {
-  if (!allTagsDiv) return; // Vérification de sécurité
-
+  if (!allTagsDiv) return;
   allTagsDiv.innerHTML = "";
   tags.forEach(tag => {
     const btn = document.createElement("button");
@@ -248,6 +221,18 @@ function renderAllTags(tags) {
       applyFilters();
     });
     allTagsDiv.appendChild(btn);
+  });
+}
+
+// Mettre à jour le datalist des tags existants
+function updateTagDatalist(tags) {
+  const datalist = document.getElementById("existingTags");
+  if (!datalist) return;
+  datalist.innerHTML = "";
+  tags.forEach(tag => {
+    const option = document.createElement("option");
+    option.value = tag;
+    datalist.appendChild(option);
   });
 }
 
@@ -263,52 +248,83 @@ function renderEntries(entriesToShow) {
     const entryElement = document.createElement("div");
     entryElement.className = "entry";
 
-    const dateStr = entry.data.date ?
-      new Date(entry.data.date).toLocaleString("fr-FR", { hour: "2-digit", minute: "2-digit" }) :
-      "Date inconnue";
+    const date = new Date(entry.data.date);
+    const dateStr = date.toLocaleString("fr-FR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
 
     const tagsHtml = (entry.data.tags || []).length > 0 ?
-      `<div class="entry-tags">${entry.data.tags.map(tag => `
-        <span class="tag">
-          ${tag}
-          <button class="delete-tag" data-entry-id="${entry.id}" data-tag="${tag}">×</button>
-        </span>
-      `).join(" ")}</div>` :
+      `<div class="entry-tags">
+        ${entry.data.tags.map(tag => `
+          <span class="tag">
+            <span class="tag-text">${tag}</span>
+            <button class="delete-tag-btn" data-entry-id="${entry.id}" data-tag="${tag}">×</button>
+          </span>
+        `).join(" ")}
+      </div>` :
       "";
 
     entryElement.innerHTML = `
       <div class="meta">
         <div class="title">${entry.data.title || "(sans titre)"}</div>
-        <div class="date">${dateStr}</div>
-        <button class="delete-entry" data-entry-id="${entry.id}">Supprimer</button>
+        <div class="date">(${dateStr})</div>
+        <div class="entry-actions">
+          <button class="edit-entry-btn" data-entry-id="${entry.id}">Modifier</button>
+          <button class="delete-entry-btn" data-entry-id="${entry.id}">Supprimer</button>
+        </div>
       </div>
       <p>${entry.data.content || "(aucun contenu)"}</p>
       ${tagsHtml}
+      <div class="add-tag-section">
+        <button class="add-tag-btn" data-entry-id="${entry.id}">+ Ajouter un tag</button>
+      </div>
     `;
     entriesDiv.appendChild(entryElement);
   });
 
-  // Ajouter les écouteurs d'événements pour les boutons de suppression
-  document.querySelectorAll(".delete-entry").forEach(button => {
+  // Ajouter les écouteurs d'événements
+  document.querySelectorAll(".delete-entry-btn").forEach(button => {
     button.addEventListener("click", (e) => {
       const entryId = e.target.dataset.entryId;
-      deleteEntry(entryId);
+      if (confirm("Voulez-vous vraiment supprimer cette entrée ?")) {
+        deleteEntry(entryId);
+      }
     });
   });
 
-  document.querySelectorAll(".delete-tag").forEach(button => {
+  document.querySelectorAll(".delete-tag-btn").forEach(button => {
     button.addEventListener("click", (e) => {
+      e.stopPropagation();
       const entryId = e.target.dataset.entryId;
       const tag = e.target.dataset.tag;
-      deleteTag(entryId, tag);
+      if (confirm(`Voulez-vous vraiment supprimer le tag "${tag}" ?`)) {
+        deleteTag(entryId, tag);
+      }
+    });
+  });
+
+  document.querySelectorAll(".edit-entry-btn").forEach(button => {
+    button.addEventListener("click", (e) => {
+      const entryId = e.target.dataset.entryId;
+      editEntry(entryId);
+    });
+  });
+
+  document.querySelectorAll(".add-tag-btn").forEach(button => {
+    button.addEventListener("click", (e) => {
+      const entryId = e.target.dataset.entryId;
+      addTagToEntry(entryId);
     });
   });
 }
 
 // --- Appliquer les filtres ---
 function applyFilters() {
-  if (!entriesDiv || !entriesDateTitle) return; // Vérification de sécurité
-
+  if (!entriesDiv || !entriesDateTitle) return;
   const fDate = currentFilter.date;
   const fText = (currentFilter.text || "").toLowerCase();
   const fTag = currentFilter.tag;
@@ -333,7 +349,6 @@ function applyFilters() {
 // Supprimer une entrée
 function deleteEntry(entryId) {
   if (!confirm("Voulez-vous vraiment supprimer cette entrée ?")) return;
-
   db.collection("entries").doc(entryId).delete()
     .then(() => {
       console.log("Entrée supprimée avec succès.");
@@ -349,7 +364,6 @@ function deleteTag(entryId, tag) {
   if (!entry) return;
 
   const updatedTags = (entry.data.tags || []).filter(t => t !== tag);
-
   db.collection("entries").doc(entryId).update({ tags: updatedTags })
     .then(() => {
       console.log("Tag supprimé avec succès.");
@@ -357,4 +371,125 @@ function deleteTag(entryId, tag) {
     .catch((error) => {
       console.error("Erreur lors de la suppression du tag :", error);
     });
+}
+
+// Fonction pour modifier une entrée
+function editEntry(entryId) {
+  const entry = allEntries.find(e => e.id === entryId);
+  if (!entry) return;
+
+  // Formater la date pour l'input datetime-local (YYYY-MM-DDTHH:MM)
+  const date = entry.data.date ? new Date(entry.data.date) : new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+  // Créer une fenêtre modale pour l'édition
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>Modifier l'entrée</h3>
+      <input id="editTitle" value="${entry.data.title || ""}" placeholder="Titre">
+      <textarea id="editContent" placeholder="Contenu">${entry.data.content || ""}</textarea>
+      <label for="editDate">Date et heure :</label>
+      <input id="editDate" type="datetime-local" value="${formattedDate}">
+      <div class="modal-actions">
+        <button id="saveEdit" class="button-primary">Enregistrer</button>
+        <button id="cancelEdit" class="button-secondary">Annuler</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Gérer l'enregistrement
+  document.getElementById("saveEdit").addEventListener("click", () => {
+    const newTitle = document.getElementById("editTitle").value.trim();
+    const newContent = document.getElementById("editContent").value.trim();
+    const newDateInput = document.getElementById("editDate").value;
+
+    const updateData = {
+      title: newTitle || "(sans titre)",
+      content: newContent || "",
+    };
+
+    if (newDateInput) {
+      updateData.date = new Date(newDateInput).toISOString();
+    }
+
+    db.collection("entries").doc(entryId).update(updateData)
+      .then(() => {
+        document.body.removeChild(modal);
+      })
+      .catch((error) => {
+        alert("Erreur lors de la mise à jour : " + error.message);
+      });
+  });
+
+  // Gérer l'annulation
+  document.getElementById("cancelEdit").addEventListener("click", () => {
+    document.body.removeChild(modal);
+  });
+}
+
+// Fonction pour ajouter un tag à une entrée existante
+function addTagToEntry(entryId) {
+  const entry = allEntries.find(e => e.id === entryId);
+  if (!entry) return;
+
+  // Créer une fenêtre modale pour ajouter un tag
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>Ajouter un tag</h3>
+      <input id="newTagInput" placeholder="Nouveau tag" list="existingTags">
+      <datalist id="existingTags"></datalist>
+      <div class="modal-actions">
+        <button id="saveTag" class="button-primary">Ajouter</button>
+        <button id="cancelTag" class="button-secondary">Annuler</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Remplir le datalist avec les tags existants
+  const tagSet = new Set();
+  allEntries.forEach(e => (e.data.tags || []).forEach(tag => tagSet.add(tag)));
+  const datalist = modal.querySelector("#existingTags");
+  Array.from(tagSet).sort().forEach(tag => {
+    const option = document.createElement("option");
+    option.value = tag;
+    datalist.appendChild(option);
+  });
+
+  // Gérer l'ajout du tag
+  modal.querySelector("#saveTag").addEventListener("click", () => {
+    const newTag = modal.querySelector("#newTagInput").value.trim();
+    if (!newTag) return;
+
+    const currentTags = entry.data.tags || [];
+    if (currentTags.includes(newTag)) {
+      alert("Ce tag existe déjà pour cette entrée.");
+      return;
+    }
+
+    db.collection("entries").doc(entryId).update({
+      tags: [...currentTags, newTag]
+    }).then(() => {
+      document.body.removeChild(modal);
+    }).catch((error) => {
+      alert("Erreur lors de l'ajout du tag : " + error.message);
+    });
+  });
+
+  // Gérer l'annulation
+  modal.querySelector("#cancelTag").addEventListener("click", () => {
+    document.body.removeChild(modal);
+  });
 }
