@@ -520,3 +520,72 @@ body.dark .calendar-day {
 body.dark .calendar-day.other-month {
   color: var(--color-text-dark-light);
 }
+
+/* Zone de saisie du contenu (plus grande) */
+#newContent {
+  min-height: 150px;  /* Hauteur minimale */
+  resize: vertical;  /* Permet de redimensionner verticalement */
+  font-family: inherit;
+  line-height: 1.5;   /* Espacement entre les lignes */
+  white-space: pre-wrap; /* Conserve les retours chariot */
+  padding: 12px;
+}
+
+/* Zone de saisie en mode sombre */
+body.dark #newContent {
+  background-color: var(--color-panel-dark);
+  color: var(--color-text-dark);
+  border-color: var(--color-border-dark);
+}
+
+/* Style des panneaux repliables */
+.collapsible-panel {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 12px 12px 0 0;
+  background-color: var(--color-panel);
+}
+
+body.dark .panel-header {
+  background-color: var(--color-panel-dark);
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.collapse-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-text-light);
+  padding: 0 8px;
+}
+
+.panel-content {
+  transition: max-height 0.3s ease-out, opacity 0.2s;
+  overflow: hidden;
+}
+
+.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* Bouton de repliage en mode sombre */
+body.dark .collapse-btn {
+  color: var(--color-text-dark-light);
+}

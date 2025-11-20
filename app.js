@@ -493,3 +493,25 @@ function addTagToEntry(entryId) {
     document.body.removeChild(modal);
   });
 }
+
+// Gérer le repliage des panneaux
+document.querySelectorAll(".collapse-btn").forEach(button => {
+  button.addEventListener("click", (e) => {
+    const targetId = e.target.dataset.target;
+    const panelContent = document.getElementById(targetId);
+    const isCollapsed = panelContent.classList.toggle("collapsed");
+
+    // Changer le symbole du bouton
+    e.target.textContent = isCollapsed ? "+" : "−";
+  });
+});
+
+// Par défaut, replier les panneaux sur mobile
+if (window.innerWidth < 768) {
+  document.querySelectorAll(".panel-content").forEach(panel => {
+    panel.classList.add("collapsed");
+  });
+  document.querySelectorAll(".collapse-btn").forEach(button => {
+    button.textContent = "+";
+  });
+}

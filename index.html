@@ -19,47 +19,63 @@
   </div>
 
   <div id="journalContent" style="display: none;">
-    <div class="layout">
-      <div>
-        <div class="panel">
-          <h3>Nouvelle entrée</h3>
-          <input id="newTitle" placeholder="Titre">
-          <textarea id="newContent" placeholder="Texte"></textarea>
-		  <input id="newTags" placeholder="Tags (séparés par des virgules)" list="existingTags">
-		  <datalist id="existingTags"></datalist>
-          <button id="addEntryBtn">Ajouter</button>
-          <!-- Filtres déplacés ici -->
-          <div style="margin-top: 16px; border-top: 1px solid #e5e7eb; padding-top: 12px;">
-            <h4>Filtres</h4>
-            <input id="searchDate" type="date" placeholder="Date">
-            <input id="searchText" placeholder="Rechercher dans le texte...">
-            <div id="allTags" class="tags-row" style="margin-top: 8px;"></div>
-            <button id="searchBtn" style="margin-top: 8px;">Rechercher</button>
-            <button id="clearFilters" style="margin-top: 8px;">Réinitialiser</button>
-          </div>
-        </div>
-        <div class="panel">
-          <h3>Calendrier</h3>
-          <div class="calendar-header">
-            <button id="prevMonth">←</button>
-            <h2 id="monthYear">Novembre 2025</h2>
-            <button id="nextMonth">→</button>
-          </div>
-          <div class="calendar-weekdays">
-            <div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>
-          </div>
-          <div class="calendar-days" id="calendarDays"></div>
-        </div>
+
+<div class="layout">
+  <!-- Colonne de GAUCHE : Nouvelle entrée + Filtres + Calendrier -->
+  <div>
+    <div class="panel">
+      <h3>Nouvelle entrée</h3>
+      <input id="newTitle" placeholder="Titre">
+      <textarea id="newContent" placeholder="Texte"></textarea>
+      <input id="newTags" placeholder="Tags (séparés par des virgules)" list="existingTags">
+      <datalist id="existingTags"></datalist>
+      <button id="addEntryBtn">Ajouter</button>
+    </div>
+
+    <!-- Bloc des filtres -->
+    <div class="panel collapsible-panel">
+      <div class="panel-header">
+        <h3>Filtres</h3>
+        <button class="collapse-btn" data-target="filters">−</button>
       </div>
-      <!-- Zone centrale pour les entrées -->
-      <div>
-        <div class="panel">
-          <h3 id="entriesDateTitle">Entrées pour le <span id="selectedDate"></span></h3>
-          <div id="entries"></div>
+      <div class="panel-content" id="filters">
+        <input id="searchDate" type="date" placeholder="Date">
+        <input id="searchText" placeholder="Rechercher dans le texte...">
+        <div id="allTags" class="tags-row" style="margin-top: 8px;"></div>
+        <button id="searchBtn" style="margin-top: 8px;">Rechercher</button>
+        <button id="clearFilters" style="margin-top: 8px;">Réinitialiser</button>
+      </div>
+    </div>
+
+    <!-- Bloc du calendrier -->
+    <div class="panel collapsible-panel">
+      <div class="panel-header">
+        <h3>Calendrier</h3>
+        <button class="collapse-btn" data-target="calendar">−</button>
+      </div>
+      <div class="panel-content" id="calendar">
+        <div class="calendar-header">
+          <button id="prevMonth">←</button>
+          <h2 id="monthYear">Novembre 2025</h2>
+          <button id="nextMonth">→</button>
         </div>
+        <div class="calendar-weekdays">
+          <div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>
+        </div>
+        <div class="calendar-days" id="calendarDays"></div>
       </div>
     </div>
   </div>
+
+  <!-- Colonne de DROITE : Liste des entrées -->
+  <div>
+    <div class="panel">
+      <h3 id="entriesDateTitle">Entrées pour le <span id="selectedDate"></span></h3>
+      <div id="entries"></div>
+    </div>
+  </div>
+</div>
+
 
   <!-- Login Popup -->
   <div id="loginPopup" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); justify-content: center; align-items: center;">
