@@ -48,6 +48,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const isDark = document.body.classList.toggle("dark");
     localStorage.setItem("journal-dark", isDark ? "1" : "0");
     darkToggle.textContent = isDark ? "☀️" : "🌙";
+	
+	// --- Bouton d'export CSV ---
+	const exportCSVBtn = document.getElementById("exportCSVBtn");
+	if (exportCSVBtn) {  // Vérification de sécurité
+	  exportCSVBtn.addEventListener("click", exportToCSV);
+	}
+
+	function exportToCSV() {
+	  if (!allEntries || allEntries.length === 0) {
+		alert("Aucune entrée à exporter.");
+		return;
+	  }
+
+	  // Créer les lignes du CSV
+	  let csvContent = "data:text/csv;charset=utf-8,";
+	  csvContent += "Date,Tags,Titre,Contenu\n"; // En-tête
+
+	  allEntries.forEach(entry => {
+		const date = entry.data.date ? new Date(entry.data.date).toLocaleString("fr-FR") : "Date inconnue";
+		const tags = entry.data.tags ? `"${entry.data.tags.join("; ")}"` : "";
+		const title = entry.data.title ? `"${entry.data.title.replace(/"/g, '""')}"` : "(sans titre)";
+		const content = entry.data.content ? `"${entry.data.content.replace(/"/g, '""').replace(/\n/g, "\\n")}"` : "(aucun contenu)";
+
+		csvContent += `${date},${tags},${title},${content}\n`;
+	  });
+
+	  // Créer un lien de téléchargement
+	  const encodedUri = encodeURI(csvContent);
+	  const link = document.createElement("a");
+	  link.setAttribute("href", encodedUri);
+	  link.setAttribute("download", `mon-journal-export-${new Date().toISOString().slice(0, 10)}.csv`);
+	  document.body.appendChild(link);
+	  link.click();
+	  document.body.removeChild(link);
+	}
+
   });
 
   // --- Admin Login ---
@@ -72,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
       lockedMessage.style.display = "block";
     }
   });
+
 
   // --- Ajouter une entrée ---
   addEntryBtn.addEventListener("click", () => {
@@ -394,7 +431,7 @@ function editEntry(entryId) {
     <div class="modal-content">
       <h3>Modifier l'entrée</h3>
       <input id="editTitle" value="${entry.data.title || ""}" placeholder="Titre">
-      <textarea id="editContent" placeholder="Contenu">${entry.data.content || ""}</textarea>
+      <textarea id="editContent" placeholder="Contenu" style="min-height: 250px;">${entry.data.content || ""}</textarea>
       <label for="editDate">Date et heure :</label>
       <input id="editDate" type="datetime-local" value="${formattedDate}">
       <div class="modal-actions">

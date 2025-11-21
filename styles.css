@@ -246,6 +246,13 @@ body.dark .entry {
   border-color: var(--color-border-dark);
 }
 
+/* Affichage des retours chariot dans les entrées */
+.entry p {
+  white-space: pre-wrap; /* Conserve les retours chariot et les espaces */
+  margin: 8px 0;
+  line-height: 1.5; /* Espacement entre les lignes */
+}
+
 .entry .meta {
   display: flex;
   align-items: center;
@@ -588,4 +595,28 @@ body.dark .panel-header {
 /* Bouton de repliage en mode sombre */
 body.dark .collapse-btn {
   color: var(--color-text-dark-light);
+}
+
+
+/* Style pour le bouton d'export CSV */
+#exportCSVBtn {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* Espace entre l'icône et le texte (si tu en ajoutes) */
+}
+
+#exportCSVBtn:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Taille de l'icône */
+#exportCSVBtn i {
+  font-size: 16px;
 }

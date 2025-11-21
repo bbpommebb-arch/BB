@@ -3,19 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Journal Privé</title>
+  <title>MJP</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <button id="adminBtn">Admin</button>
-  <button id="darkToggle">🌙</button>
+  <button id="adminBtn" title="Admin"><i class="fas fa-user-shield"></i></button>
+  <button id="exportCSVBtn" title="Exporter en CSV"><i class="fas fa-file-csv"></i></button>
+  <button id="darkToggle" title="Mode sombre">🌙</button>
 
   <div id="lockedMessage" class="panel">
-    <p>Ce journal est privé.</p>
+    <p>Privé.</p>
   </div>
 
   <div id="journalContent" style="display: none;">
